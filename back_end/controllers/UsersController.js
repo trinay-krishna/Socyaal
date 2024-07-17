@@ -2,6 +2,9 @@ const User = require('../models/User.js');
 const passport = require('passport');
 const { body, validationResult } = require('express-validator');
 const { hashPassword, comparePasswords } = require('../utils/passwordHash.js');
+const generateLink = require('../utils/generateLink.js');
+const sendEmail = require('../utils/sendMail.js');
+const Token = require('../models/Token.js');
 
 exports.create_user = [
     body('userName')
@@ -12,6 +15,9 @@ exports.create_user = [
     .trim()
     .isLength({min: 8})
     .withMessage('Password must atleast be 8 characters'),
+    body('userEmail')
+    .trim()
+    .isEmail(),
     async (req, res, next) => {
         try {
             const errors = validationResult(req);
@@ -27,15 +33,19 @@ exports.create_user = [
                 });
             }
     
-            const { userName, userPass }  = req.body;
+            const { userName, userPass, userEmail }  = req.body;
             const hashedPassword = await hashPassword(userPass);
 
             const user = new User({
                 userName,
                 userPass: hashedPassword,
+                userEmail,
             });
 
             await user.save();
+
+            const link = await generateLink(user._id);
+            sendEmail(userEmail, link);
 
             res.status(201).json({
                 success: true,
@@ -77,5 +87,52 @@ exports.login_user = async (req, res, next) => {
     } catch(err) {
         console.log(err);
     }
+}
+
+exports.verify_user = async (req, res, next) => {
+    try {
+        const { userID, token } = req.params;
+
+        const user = await User.findOne({_id: userID});
+    
+        if(!user) {
+            return res.status(400).json({
+                success: false,
+                msg: 'Invalid Link! User not found!',
+            });
+        }
+
+        const tokenDoc = await Token.findOne({
+            userID,
+            token,
+        });
+
+        if (!tokenDoc) {
+            return res.status(400).json({
+                success: false,
+                msg: 'Invalid Link!',
+            });
+        }
+
+        user.verified = true;
+        await user.save();
+
+        await Token.deleteOne({
+            _id: tokenDoc._id
+        });
+
+        res.status(201).json({
+            success: true,
+            msg: 'User verified successfully!',
+        });
+
+    } catch(err) {
+        console.log(err);
+        res.status(400).json({
+            success: false,
+            msg: 'An error occured!',
+        });
+    }
+
 }
 

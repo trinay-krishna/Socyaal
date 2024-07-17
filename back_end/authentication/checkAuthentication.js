@@ -5,7 +5,7 @@ function checkAuthenticated(req, res, next) {
     }
 
     res.status(400).json({
-        success: 'false',
+        auth: 'false',
         msg: 'Unauthorized',
     });
 }

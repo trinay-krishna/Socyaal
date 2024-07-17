@@ -8,8 +8,7 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-router.get('/login',checkAuthenticated);
-
+router.get('/verify/:userID/:token', usersController.verify_user);
 
 router.post('/createUser',usersController.create_user );
 
