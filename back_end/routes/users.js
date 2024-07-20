@@ -10,6 +10,11 @@ router.get('/', function(req, res, next) {
 
 router.get('/verify/:userID/:token', usersController.verify_user);
 
+router.get('/reset-pass/:userID/:token', usersController.reset_pass_get);
+router.post('/reset-pass/:userID/:token', usersController.reset_pass_post);
+
+router.post('/reset-pass',usersController.reset_pass_link )
+
 router.post('/createUser',usersController.create_user );
 
 router.post('/login', usersController.login_user);
