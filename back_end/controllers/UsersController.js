@@ -77,7 +77,7 @@ exports.login_user = async (req, res, next) => {
                     });
                 }
 
-                res.status(201).json({
+                res.status(200).json({
                     success: true,
                     user,
                     msg: 'Login Successful',
@@ -85,7 +85,7 @@ exports.login_user = async (req, res, next) => {
             })
         })(req, res, next);
     } catch(err) {
-        console.log(err);
+        console.error(err);
     }
 }
 
@@ -256,13 +256,13 @@ exports.reset_pass_get = async (req, res, next) => {
             });
         }
     
-        res.status(201).json({
+        res.status(200).json({
             success: true,
             msg: 'Link Valid!',
         });
 
     } catch(err) {
-        res.status(400).json({
+        res.status(500).json({
             success: false,
             msg: 'An error occured!',
         });
