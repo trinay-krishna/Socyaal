@@ -1,0 +1,9 @@
+.inputContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input {
+    border: 1px solid gray;
+}

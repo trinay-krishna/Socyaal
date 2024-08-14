@@ -6,6 +6,7 @@ var logger = require('morgan');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const session = require('express-session');
+const cors = require('cors');
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -22,12 +23,21 @@ const postRouter = require('./routes/post');
 
 var app = express();
 
-
-
+app.use(cors({
+  origin: `http://localhost:5173`,
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type'],
+  credentials: true,
+}));
 app.use(session({
   secret: 'secret',
   resave: false,
   saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    secure: false,
+    maxAge: 1000 * 60 * 24,
+  }
 }));
 app.use(passport.initialize());
 app.use(passport.session())
