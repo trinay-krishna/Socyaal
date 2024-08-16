@@ -1,13 +1,11 @@
 import styles from './Input.module.css';
 
-export default function Input( { label, name, id, placeHolder, isPassword } ) {
-
-    const labelID = id ? id : name;
+export default function Input( { label, name, type, onChange, value } ) {
     
     return(
         <div className={styles.inputContainer}>
-            <label htmlFor={labelID}>{label}</label>
-            <input className={styles.input} type={ isPassword ? 'password' : 'text' } name={name} id={labelID} placeholder={placeHolder ? placeHolder : ''} required />
+            <input className={styles.input} type={type ? type : 'text'} name={name} placeholder='' onChange={onChange} value={value}  required />
+            <div className={styles.labelline}>{label}</div>
         </div>
     );
 }

@@ -1,9 +1,39 @@
 .inputContainer {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 5px;
 }
 
 .input {
-    border: 1px solid gray;
+    font-size: 1.2rem;
+    border: .1em solid gray;
+    border-radius: .25em;
+    padding: .25em .3em;
+    z-index: 1;
+}
+
+.input:focus {
+    border-color: magenta;
+    box-shadow: 0 0 1em magenta;
+    z-index: 0;
+}
+
+.input:focus + .labelline,.input:focus + .labelline {
+    transition: transform .2s ease;
+    transform: translate(-1em, -1.5em) scale(0.8);
+    padding: 0 .2em;
+    color: magenta;
+    text-shadow: 0 0 magenta;
+    z-index: 1111;
+}
+
+.labelline {
+    position: absolute;
+    margin-left: .5em;
+    color: rgba(200, 207, 212, 0.247);
+}
+
+input:not(:placeholder-shown) + .labelline{
+    color: transparent;
 }

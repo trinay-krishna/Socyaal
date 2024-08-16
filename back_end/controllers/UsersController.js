@@ -27,7 +27,7 @@ exports.create_user = [
                 });
             }
             if(!errors.isEmpty()) {
-                res.status(400).json({
+                return res.status(400).json({
                     success: false,
                     errors: errors.errors,
                 });

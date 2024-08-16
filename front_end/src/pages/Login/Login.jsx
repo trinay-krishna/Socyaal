@@ -57,11 +57,11 @@ export default function Login() {
         <div className={styles.bgImg}>
             <div className={styles.loginContainer}>
                 <form onSubmit={handleSubmit} className={styles.form}>
-                    <Input label = "Username: " name = "userName"/>
-                    <Input label = "Password: " name = "userPass" isPassword = {true}/>
-                    <Button text = "Login" />
+                    <Input label = "Username" name = "userName"  />
+                    <Input label = "Password" name = "userPass" type = {'password'} />
+                    <Button text = "Login" className = {styles.button}/>
                 </form>
-                <Link to='/home' className={styles.signUp}>Sign Up</Link>
+                <Link to='/signup' className={styles.signUp}>Sign Up</Link>
                 <div className={styles.errors}>
                     {Error}
                 </div>

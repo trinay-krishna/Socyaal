@@ -1,0 +1,73 @@
+.mainContainer {
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.imageContainer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    background-image: url('/bg.gif');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100%;
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+    filter: blur(5px);
+    transform: scale(1.1);
+}
+
+.signupHeading {
+    font-size: 1.6em;
+    font-weight: bold;
+    font-family: monospace;
+    color: white;
+    text-shadow: 2px 1px magenta;
+}
+
+.signUpContainer {
+    color: white;
+    font-size: 1.1rem;
+    padding: 7em 7em;
+    background-color: black;
+    border-radius: 2em;
+    box-shadow: 0 0 5em magenta;
+}
+
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1.7em;
+    align-items: center;
+
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.7em;
+}
+
+
+
+.mailDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: monospace;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.mailDiv > img {
+    width: 15em;
+}

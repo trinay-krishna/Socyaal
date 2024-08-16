@@ -1,0 +1,11 @@
+.errorContainer {
+    min-height: 100vh;
+    background-image: url('/bg.gif');
+    background-position: center;
+    background-repeat: no-repeat;
+
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
