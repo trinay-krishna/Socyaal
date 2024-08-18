@@ -5,6 +5,7 @@ import './styles/reset.css';
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
 import EmailVerify from './pages/EmailVerify/EmailVerify';
+import Home from './pages/Home/Home';
 
 const router = createBrowserRouter([
   {
@@ -17,7 +18,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/home',
-    element: <div>Home</div>,
+    element: <Home />,
   },
 
   {

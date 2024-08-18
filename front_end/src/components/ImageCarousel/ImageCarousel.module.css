@@ -1,0 +1,26 @@
+.wrapper {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    position: relative;
+
+    overflow: hidden;
+
+}
+
+.carousel {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    transition: transform .2s;
+}
+
+
+.slide {
+    object-fit: fill;
+    object-position: center;
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 100%;
+}
+

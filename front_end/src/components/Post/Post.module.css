@@ -1,0 +1,57 @@
+.postContainer {
+    border: 2px solid red;
+    width: 70%;
+    padding: 1rem;
+    height: 70vh;
+    color: white;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: bold;
+    
+    display: flex;
+    flex-direction: column;
+}
+
+.profileHeader {
+    border: 2px solid red;
+    height: 15%;
+
+    display: flex;
+    align-items: center;
+    gap: .5em;
+}
+
+.userInfo :nth-child(2) {
+    font-size: .9em;
+    color: gray;
+}
+
+.profileImage {
+    width: 2.5em;
+    border-radius: 50%;
+}
+
+.carousel {
+    height: 60%;
+    border: 2px solid red;
+}
+
+.content {
+    height: 30%;
+    border: 2px solid red;
+}
+
+.content :nth-child(2),.content :nth-child(3) {
+    margin-top: .3rem;
+    font-size: .8rem;
+    font-weight: 400;
+}
+
+.content :nth-child(3) {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.postButton {
+    height: 15%;
+    border: 2px solid red;
+}
