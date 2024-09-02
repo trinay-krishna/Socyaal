@@ -27,13 +27,16 @@ const quizRouter = require('./routes/quiz');
 
 var app = express();
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const sessionMiddleware = session({
   secret: 'secret',
   resave: false,
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    secure: false,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
     maxAge: 1000 * 60 * 24,
   }
 });
