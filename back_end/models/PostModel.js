@@ -27,6 +27,13 @@ const PostSchema = new Schema({
             required: true,
         },
     }],
+
+    community: {
+        type: Schema.Types.ObjectId,
+        ref: 'Community',
+        required: true,
+    },
+
     createdAt: {
         type: Date,
         default: Date.now,

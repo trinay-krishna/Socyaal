@@ -7,6 +7,9 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const session = require('express-session');
 const cors = require('cors');
+const http = require('http');
+const { Server } = require('socket.io');
+const setupSocket = require('./socketConfig/setupSockets');
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -20,16 +23,11 @@ async function main() {
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const postRouter = require('./routes/post');
+const quizRouter = require('./routes/quiz');
 
 var app = express();
 
-app.use(cors({
-  origin: `http://localhost:5173`,
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type'],
-  credentials: true,
-}));
-app.use(session({
+const sessionMiddleware = session({
   secret: 'secret',
   resave: false,
   saveUninitialized: true,
@@ -38,7 +36,15 @@ app.use(session({
     secure: false,
     maxAge: 1000 * 60 * 24,
   }
+});
+
+app.use(cors({
+  origin: `http://localhost:5173`,
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type'],
+  credentials: true,
 }));
+app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session())
 
@@ -55,6 +61,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/post', postRouter);
+app.use('/quiz', quizRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -74,4 +81,19 @@ app.use(function(err, req, res, next) {
   });
 });
 
-module.exports = app;
+
+const httpServer = http.createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: `http://localhost:5173`,
+    credentials: true,
+  },
+});
+
+io.engine.use(sessionMiddleware);
+
+setupSocket(io);
+
+httpServer.listen( process.env.PORT || 3000, () => {
+  console.log(`Listening to ${process.env.BASEURL}`);
+} );

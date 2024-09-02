@@ -23,6 +23,11 @@ const UserSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    communities: {
+        type : [ Schema.Types.ObjectId ],
+        ref: 'Community',
+        default: [],
+    },
     createdAt: {
         type: Date,
         default: Date.now ,

@@ -17,7 +17,7 @@ exports.create_post = [
     async ( req, res, next ) => {
         try {
             const userID = req.session.passport.user;
-            const { title, content } = req.body;
+            const { title, content, community } = req.body;
             
             const fileNames = req.files.postImages.map(element => element.path.replace(/^.*[\\/]/, ''));
             const filePaths = req.files.postImages.map(element => element.path);
@@ -35,6 +35,7 @@ exports.create_post = [
                 title,
                 content,
                 media,
+                community,
             });
 
 
@@ -81,5 +82,53 @@ exports.get_posts = async (req, res, next ) => {
         });
     }
 
+}
+
+exports.get_community_posts = async ( req, res, next ) => {
+    try {
+        const { page, community } = req.params;
+        const MAX_POSTS_PER_PAGE = 25;
+
+        const pageNumber = +page;
+
+        const communityPageCount = await Post.countDocuments({ community });
+        const totalPages = Math.ceil(communityPageCount/MAX_POSTS_PER_PAGE);
+
+        let posts = [];
+
+        if ( ( pageNumber + 1 ) <= totalPages ) {
+            const communityPosts = await Post.find({ community })
+                                    .sort( { createdAt: -1 } )
+                                    .skip( MAX_POSTS_PER_PAGE * page )
+                                    .limit(MAX_POSTS_PER_PAGE);
+            posts = [ ...posts, ...communityPosts ];
+        } 
+        
+        if ( ( pageNumber + 1 ) >= totalPages ) {
+            const adjustedPageNumber = ( pageNumber + 1 ) - totalPages;
+            const otherPosts = await Post.find( { community: { $ne: community } } )
+                                    .sort( { createdAt: -1 } )
+                                    .skip(MAX_POSTS_PER_PAGE * ( adjustedPageNumber ))
+                                    .limit(MAX_POSTS_PER_PAGE); 
+            
+            posts = [ ...posts, ...otherPosts ];
+        }
+
+        console.log(posts);
+
+        res.status(200).json({
+            success: true,
+            msg: 'Posts Fetched!',
+            posts,
+        });
+
+
+    } catch(err) {
+        console.error(err);
+        req.status(500).json({
+            success: false,
+            msg: 'Error fetching posts',
+        });
+    }
 }
 

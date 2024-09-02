@@ -6,6 +6,8 @@ const postController = require('../controllers/PostController');
 
 router.post('/create-post',checkAuthenticated, postController.create_post);
 
+router.get('/get-posts/:community/:page', checkAuthenticated, postController.get_community_posts);
+
 router.get('/get-posts/:page', checkAuthenticated, postController.get_posts);
 
 
