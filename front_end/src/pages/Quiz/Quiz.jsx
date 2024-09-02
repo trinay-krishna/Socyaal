@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { io } from 'socket.io-client';
 import Timer from "../../components/Timer/Timer";
 import QuizStart from "./QuizComponents/QuizStart";
+import QuizFinish from "./QuizComponents/QuizFinish/QuizFinish";
 
 let socket;
 
@@ -98,7 +99,7 @@ export default function Quiz() {
             return <Timer endTime={timerDate} onTimeUp={() => setUpdater(!updater)} />
         
         case 1:
-            return <div>Quiz Finished</div>
+            return <QuizFinish endDate={timerDate} onTimeUp={() => setUpdater(!updater)}/>
         
         case 2:
             return <QuizStart endTime={timerDate} onTimeUp={() => setUpdater(!updater)} questions={questions} addPoints={addPoints} nextQuestion={nextQuestion} questionIndex={questionIndex} setAttempted = {setAttempted} />

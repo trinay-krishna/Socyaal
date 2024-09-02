@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Timer from "../../../components/Timer/Timer";
+import QuizFinish from "./QuizFinish/QuizFinish";
 
 const CORRECT_ANSWER_COLOR = 'green';
 const WRONG_ANSWER_COLOR = 'red';
@@ -43,7 +44,9 @@ export default function QuizStart( { endTime, onTimeUp, questions, addPoints, ne
         nextQuestion();
     }
     console.log('ee');
-    if ( !( questionIndex !== -1 && questionIndex < questions.length) ) return null;
+    if ( questionIndex >= questions.length ) return <QuizFinish endDate={endTime} onTimeUp={onTimeUp}/>;
+
+    if ( questionIndex === -1 ) return null;
 
     return (
         <div>
