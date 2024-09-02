@@ -29,6 +29,7 @@ var app = express();
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+app.set('trust proxy', 1);
 const sessionMiddleware = session({
   secret: 'secret',
   resave: false,
@@ -36,6 +37,7 @@ const sessionMiddleware = session({
   cookie: {
     httpOnly: true,
     secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
     maxAge: 1000 * 60 * 24,
   }
 });
