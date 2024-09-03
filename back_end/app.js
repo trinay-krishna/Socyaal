@@ -11,6 +11,8 @@ const http = require('http');
 const { Server } = require('socket.io');
 const setupSocket = require('./socketConfig/setupSockets');
 
+const MongoStore = require('connect-mongo');
+
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -32,8 +34,11 @@ const isProduction = process.env.NODE_ENV === 'production';
 app.set('trust proxy', 1);
 const sessionMiddleware = session({
   secret: 'secret',
+  store: MongoStore.create( {
+    mongoUrl : process.env.MONGODB,
+  } ),
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: {
     httpOnly: true,
     secure: isProduction,
