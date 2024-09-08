@@ -1,24 +1,39 @@
 const Quiz = require('../models/Quiz');
 const Participant = require('../models/Participant');
 
-function setupSocket( io ) {
+let leaderboard = {};
 
-    io.use( (socket, next) => {
-        const session = socket.request.session;
-        console.log(session);
-        if ( session && session.passport && session.passport.user ) {
-            next();
-        } else {
-            next(new Error('Not authenticated!'));
-        }
-    } );
-    
-    let leaderboard = {};
+function addQuiz( quizID, endDate ) {
+    leaderboard[quizID] = {};
+
+    const BUFFER = 30000;
+    const timeRemaining = endDate - Date.now();
+
+    setTimeout( async () => {
+        const participantEntries = Object.entries(leaderboard[quizID]);
+
+        await Promise.all( participantEntries.map( ( [ userID, { points, endTime } ] ) => {
+            const participantInstance = new Participant({
+                userID,
+                quizID,
+                points,
+                endDate: endTime,
+            });
+
+            return participantInstance.save();
+        } ) );
+
+        console.log('Leaderboard commited to Database, clearing cache');
+        delete leaderboard[quizID];
+    },  ( timeRemaining + BUFFER ) ); 
+}
+
+function setupSocket( io ) {
 
     function getLeaderboard( quizID ) {
         const userIDs = Object.entries(leaderboard[quizID])
-            .sort( ([, userA], [, userB]) => userB.points - userA.points )
-            .map( ( [userID] ) => userID );
+            .sort( ([, userA], [, userB]) => userB.points - userA.points || userA.endTime - userB.endTime )
+            .map( ( [userID, { points }] ) => ({ userID, points }) );
         
         return userIDs;
         
@@ -30,51 +45,21 @@ function setupSocket( io ) {
         const userID = session.passport.user;
         return userID;
     }
+    
 
     io.on('connection', socket => {
         console.log(`${socket.id} connected!`);
 
-        socket.on('quizJoin', ( quizID ) => {
+        socket.on('quizJoin', async ( quizID ) => {
+            console.log('joining', quizID);
+
+            socket.join(quizID);
             const userID = getUserID(socket);
-            if ( !leaderboard[quizID] ) {
-                leaderboard[quizID] = {};
-                
-                Quiz.findOne({_id: quizID })
-                .then( quiz => {
-                    
-                    const BUFFER = 30000;
-                    const endDate = ( new Date(quiz.endDate) ).getTime();
-                    const timeRemaining = endDate - Date.now() + BUFFER;
-
-                    setTimeout(async () => {
-                        
-                        const participantEntries = Object.entries(leaderboard[quizID]);
-
-                        await Promise.all( participantEntries.map( ( [ userID, { points } ] ) => {
-
-                            const participantInstance = new Participant({
-                                userID,
-                                quizID,
-                                points,
-                                endDate: endDate,
-                            });
-
-                            
-
-                            return participantInstance.save();
-                        } ) );
-
-                        delete leaderboard[quizID];
-
-
-                    }, timeRemaining );
-
-                } )
-                .catch(err => console.error(err));
-            }
             
-            if ( !leaderboard[quizID][userID] ) {
-                leaderboard[quizID][userID] = { points: 0, currQuestion: 0, attempted: false, };
+            if (  leaderboard[quizID] && !leaderboard[quizID][userID] ) {
+                console.log('Leaderboard is', leaderboard);
+                console.log('init leaderboard');
+                leaderboard[quizID][userID] = { points: 0, currQuestion: 0, attempted: false, endTime: Infinity };
             }
 
             console.log(JSON.stringify(leaderboard));
@@ -82,7 +67,11 @@ function setupSocket( io ) {
 
         socket.on('addPoints', ( quizID, points ) => {
             const userID = getUserID(socket);
+            if ( !leaderboard[quizID] || !leaderboard[quizID][userID] )
+                    return;
+
             leaderboard[quizID][userID].points += points;
+            leaderboard[quizID][userID].endTime = Date.now();
             
             const sortedLeaderboard = getLeaderboard(quizID);
             socket.emit('updateLeaderboard', sortedLeaderboard);
@@ -91,7 +80,8 @@ function setupSocket( io ) {
 
         socket.on('requestNextQuestion', ( quizID ) => {
             const userID = getUserID(socket);
-            console.log(userID);
+            if ( !leaderboard[quizID] || !leaderboard[quizID][userID] )
+                return;
             if ( leaderboard[quizID][userID].attempted ) {
                 leaderboard[quizID][userID].currQuestion += 1;
                 leaderboard[quizID][userID].attempted = false;
@@ -102,6 +92,9 @@ function setupSocket( io ) {
         
         socket.on('requestCurrentQuestion', quizID => {
             const userID = getUserID(socket);
+            console.log(leaderboard, leaderboard[quizID]);
+            if ( !leaderboard[quizID] || !leaderboard[quizID][userID] )
+                return;
 
             if ( leaderboard[quizID][userID].attempted ) {
                 leaderboard[quizID][userID].currQuestion += 1;
@@ -112,6 +105,8 @@ function setupSocket( io ) {
 
         socket.on('attempted', quizID => {
             const userID = getUserID(socket);
+            if ( !leaderboard[quizID] || !leaderboard[quizID][userID] )
+                return;
 
             leaderboard[quizID][userID].attempted = true;
         });
@@ -126,4 +121,4 @@ function setupSocket( io ) {
     
 }
 
-module.exports = setupSocket;
+module.exports = { setupSocket, addQuiz };

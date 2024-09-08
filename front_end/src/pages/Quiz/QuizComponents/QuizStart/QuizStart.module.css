@@ -1,0 +1,84 @@
+.QuizContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    gap: 2.5em;
+
+    font-size: 1.4rem;
+    font-family: monospace;
+    padding: 5em 0;
+
+    background-color: var(--background);
+    color: white;
+}
+
+.timer {
+    text-align: center;
+}
+
+.leaderBoard {
+    border: 2px solid red;
+    justify-self: flex-start;
+}
+
+.mainContainer {
+    display: flex;
+    width: 100%;
+}
+
+.questionWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2em;
+
+    margin: 0 auto;
+
+}
+
+.optionContainer {
+    display: flex;
+    flex-direction: column;
+    gap: .8rem;
+    padding: 1.4rem;
+
+}
+
+.questionDiv {
+    border: 2px solid magenta;
+    box-shadow: 0 0 1em magenta;
+    border-radius: 1.2em;
+
+    font-size: 1.5em;
+    
+    padding: 1.2em;
+}
+
+.optionButton {
+    border-radius: .3em;
+    padding: 1.2em;
+    background-color: var(--primary);
+    cursor: pointer;
+
+    text-align: center;
+    transition: transform .5s;
+
+}
+
+.optionButton:hover {
+    transform: scale(1.1);
+}
+
+.nextDiv {
+
+    text-align: center;
+}
+
+.nextDiv > button {
+    border-radius: .3em;
+    padding: .7em 1.9em;
+    background-color: var(--primary);
+    cursor: pointer;
+    
+}
+

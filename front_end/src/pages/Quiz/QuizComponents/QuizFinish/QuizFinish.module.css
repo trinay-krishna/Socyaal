@@ -1,0 +1,55 @@
+.quizFinishContainer {
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 1.4rem;
+    font-family: monospace;
+
+    background-color: var(--background);
+    color: white;
+}
+
+.mainContainer {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+
+}
+
+.quizFinishedText {
+    font-size: 6rem;
+    font-weight: bold;
+
+    text-shadow: 0 0 .9rem magenta;
+}
+
+.timerDiv {
+    text-align: center;
+}
+
+.playDiv {
+    display: flex;
+    flex-direction: column;
+    gap: .9rem;
+}
+
+.playDiv button {
+    border-radius: .3em;
+    background-color: var(--primary);
+    padding: 1rem 2rem;
+    cursor: pointer;
+
+    text-align: center;
+
+    transition: transform .5s;
+}
+
+.playDiv button:hover {
+    transform: scale(1.1);
+}

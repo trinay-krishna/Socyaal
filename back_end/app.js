@@ -9,7 +9,7 @@ const session = require('express-session');
 const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
-const setupSocket = require('./socketConfig/setupSockets');
+const { setupSocket } = require('./socketConfig/setupSockets');
 
 const MongoStore = require('connect-mongo');
 
@@ -100,8 +100,19 @@ const io = new Server(httpServer, {
 });
 
 io.engine.use(sessionMiddleware);
+io.use( (socket, next) => {
+  const session = socket.request.session;
+  console.log(session);
+  if ( session && session.passport && session.passport.user ) {
+      next();
+  } else {
+      next(new Error('Not authenticated!'));
+  }
+} );
 
 setupSocket(io);
+
+app.set('io', io);
 
 httpServer.listen( process.env.PORT || 3000, () => {
   console.log(`Listening to ${process.env.BASEURL}`);

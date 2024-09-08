@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
 import { io } from 'socket.io-client';
 import Timer from "../../components/Timer/Timer";
-import QuizStart from "./QuizComponents/QuizStart";
+import QuizStart from "./QuizComponents/QuizStart/QuizStart";
 import QuizFinish from "./QuizComponents/QuizFinish/QuizFinish";
 
 let socket;
@@ -13,14 +13,12 @@ export default function Quiz() {
 
     const [ signal, setSignal ] = useState(-1);
     const [ questions, setQuestions ] = useState([]);
-    const [ timerDate, setTimerDate ] = useState(Date.now());
+    const [ time, setTime ] = useState(-1);
     const [ questionIndex, setquestionIndex ] = useState(-1);
     const [ leaderboard, setLeaderboard ] = useState([]);
-    console.log(questionIndex, 'it is');
 
-    const [ updater, setUpdater ] = useState(false);
 
-    function connectSocket() {
+    useEffect( () => {
         if ( !socket ) {
             socket = io(`${API_URL}`, {
                 withCredentials: true,
@@ -30,26 +28,37 @@ export default function Quiz() {
         socket.connect();
     
         socket.on('nextQuestion', newIndex => {
-            console.log('setting to ', newIndex);
             setquestionIndex( () =>  newIndex);
         });
 
         socket.on('currentQuestion', index => {
-                console.log('currr', index);
                 setquestionIndex(index);
         });
 
         socket.on('updateLeaderboard', leaderboard => {
-            console.log(leaderboard);
             setLeaderboard(leaderboard);
+        });
+
+        socket.on('time', msg => {
+            setTime(msg.time);
+            setSignal(msg.signal);
+        });
+
+        socket.on('reconnectSocket', () => {
+            window.location.reload();
         });
 
         socket.emit('quizJoin', quizID);
 
-        socket.emit('requestCurrentQuestion', quizID);
 
+        return () => {
 
-    }
+            if ( socket && socket.connected ) {
+                socket.disconnect();
+            }
+        }
+
+    }, [] );
     
     useEffect( () => {
 
@@ -60,23 +69,15 @@ export default function Quiz() {
         .then( res => res.json() )
         .then( res => {
             console.log(res);
-            if( res.signal === 0 )
-                setTimerDate(() => (new Date(res.startDate)).getTime()  );
-            else if( res.signal == 2 ) {
-                setTimerDate(() => (new Date(res.endDate)).getTime()  );
-                console.log('questions', res.questions);
+            if( res.signal == 2 ) {
                 setQuestions(res.questions)
-                connectSocket();
+                socket.emit('requestCurrentQuestion', quizID);
             }
             setSignal(res.signal);
 
         } )
 
-        return () => {
-            if ( socket && socket.connected )
-                socket.disconnect();
-        }
-    }, [ updater ] );
+    }, [ signal ] );
 
     function addPoints ( points ) {
         socket.emit('addPoints', quizID, points);
@@ -90,19 +91,18 @@ export default function Quiz() {
         socket.emit('attempted', quizID);
     }
 
-    console.log('lel is ', questionIndex);
     switch ( signal ) {
         case -1:
             return <div>LOADING</div>;
         
         case 0: 
-            return <Timer endTime={timerDate} onTimeUp={() => setUpdater(!updater)} />
+            return <div> Time Left is: {time} </div>
         
         case 1:
-            return <QuizFinish endDate={timerDate} onTimeUp={() => setUpdater(!updater)}/>
+            return <QuizFinish time={time} />;
         
         case 2:
-            return <QuizStart endTime={timerDate} onTimeUp={() => setUpdater(!updater)} questions={questions} addPoints={addPoints} nextQuestion={nextQuestion} questionIndex={questionIndex} setAttempted = {setAttempted} />
+            return <QuizStart time = {time} leaderboard={leaderboard} questions={questions} addPoints={addPoints} nextQuestion={nextQuestion} questionIndex={questionIndex} setAttempted = {setAttempted} />;
         
         default:
             return <div> Invalid Signal </div>
