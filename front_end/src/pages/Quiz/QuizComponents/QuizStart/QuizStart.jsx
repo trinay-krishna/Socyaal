@@ -2,6 +2,7 @@ import { useState } from "react";
 import Timer from "../../../../components/Timer/Timer";
 import QuizFinish from "../QuizFinish/QuizFinish";
 import styles from './QuizStart.module.css';
+import Leaderboard from "../Leaderboard/Leaderboard";
 
 
 const CORRECT_ANSWER_COLOR = 'green';
@@ -50,9 +51,7 @@ export default function QuizStart( { time, leaderboard, questions, addPoints, ne
     return (
         <div className={styles.QuizContainer}>
             <div className={styles.mainContainer}>
-                <div className={styles.leaderBoard}>
-                    {leaderboard.map( user => <div key={user.userID}> {user.userID} - {user.points} </div> )}
-                </div>
+                <Leaderboard leaderboard={leaderboard}/>
                 <div className={styles.questionWrapper}>
                     <div className={styles.timer}> Time Left: {time} </div>
                     <div className={styles.questionDiv}> Question: {questions[questionIndex].questionText} </div>
@@ -71,7 +70,13 @@ export default function QuizStart( { time, leaderboard, questions, addPoints, ne
                         }
                     </div>
                     <div className={styles.nextDiv}>
-                        <button onClick={handleNextQuestion} disabled = { selectedOption === -1 } >Next Question</button>
+                        <button onClick={handleNextQuestion} disabled = { selectedOption === -1 } >
+                            { questionIndex === ( questions.length - 1 ) ? <div> Finish Quiz </div>
+                            :
+                            <div>Next Question</div>
+                            }
+
+                        </button>
                     </div>
                 </div>
             </div>

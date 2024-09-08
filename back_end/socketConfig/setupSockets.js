@@ -1,5 +1,6 @@
 const Quiz = require('../models/Quiz');
 const Participant = require('../models/Participant');
+const User = require('../models/User');
 
 let leaderboard = {};
 
@@ -31,11 +32,11 @@ function addQuiz( quizID, endDate ) {
 function setupSocket( io ) {
 
     function getLeaderboard( quizID ) {
-        const userIDs = Object.entries(leaderboard[quizID])
+        const participants = Object.entries(leaderboard[quizID])
             .sort( ([, userA], [, userB]) => userB.points - userA.points || userA.endTime - userB.endTime )
-            .map( ( [userID, { points }] ) => ({ userID, points }) );
-        
-        return userIDs;
+            .map( ( [, { userName ,points }] ) => ({ userName, points }) );
+        console.log(participants);
+        return participants;
         
     }
 
@@ -53,14 +54,22 @@ function setupSocket( io ) {
         socket.on('quizJoin', async ( quizID ) => {
             console.log('joining', quizID);
 
-            socket.join(quizID);
             const userID = getUserID(socket);
+            const user = await User.findOne({ _id: userID });
+            console.log('User is', user);
+            if ( !user )
+                    return;
             
+            const userName = user.userName;
+            console.log('userName is', userName);
             if (  leaderboard[quizID] && !leaderboard[quizID][userID] ) {
                 console.log('Leaderboard is', leaderboard);
                 console.log('init leaderboard');
-                leaderboard[quizID][userID] = { points: 0, currQuestion: 0, attempted: false, endTime: Infinity };
+                leaderboard[quizID][userID] = { userName, points: 0, currQuestion: 0, attempted: false, endTime: Infinity };
             }
+
+            socket.join(quizID);
+            socket.emit('joinedQuiz');
 
             console.log(JSON.stringify(leaderboard));
         });

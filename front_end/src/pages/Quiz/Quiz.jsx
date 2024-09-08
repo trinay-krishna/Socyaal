@@ -16,6 +16,7 @@ export default function Quiz() {
     const [ time, setTime ] = useState(-1);
     const [ questionIndex, setquestionIndex ] = useState(-1);
     const [ leaderboard, setLeaderboard ] = useState([]);
+    const [ quizJoined, setQuizJoined ] = useState(false);
 
 
     useEffect( () => {
@@ -46,6 +47,10 @@ export default function Quiz() {
 
         socket.on('reconnectSocket', () => {
             window.location.reload();
+        });
+
+        socket.on('joinedQuiz', () => {
+            setQuizJoined(true);
         });
 
         socket.emit('quizJoin', quizID);
@@ -90,6 +95,8 @@ export default function Quiz() {
     function setAttempted() {
         socket.emit('attempted', quizID);
     }
+
+    if ( !quizJoined ) return <div> Joining </div>;
 
     switch ( signal ) {
         case -1:
