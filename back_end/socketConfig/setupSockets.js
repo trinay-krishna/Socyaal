@@ -74,7 +74,7 @@ function setupSocket( io ) {
             leaderboard[quizID][userID].endTime = Date.now();
             
             const sortedLeaderboard = getLeaderboard(quizID);
-            socket.emit('updateLeaderboard', sortedLeaderboard);
+            io.to(quizID).emit('updateLeaderboard', sortedLeaderboard);
             console.log(JSON.stringify(leaderboard));
         });
 
