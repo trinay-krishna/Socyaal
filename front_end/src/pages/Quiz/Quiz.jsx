@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { io } from 'socket.io-client';
 import Timer from "../../components/Timer/Timer";
 import QuizStart from "./QuizComponents/QuizStart/QuizStart";
 import QuizFinish from "./QuizComponents/QuizFinish/QuizFinish";
+import Quiz404 from "./QuizComponents/Quiz404/Quiz404";
 
 let socket;
 
 export default function Quiz() {
     const API_URL = import.meta.env.VITE_API_URL;
-    const { quizID } = useParams()
+    const { quizID } = useParams();
+    const navigate = useNavigate();
 
     const [ signal, setSignal ] = useState(-1);
     const [ questions, setQuestions ] = useState([]);
@@ -17,6 +19,7 @@ export default function Quiz() {
     const [ questionIndex, setquestionIndex ] = useState(-1);
     const [ leaderboard, setLeaderboard ] = useState([]);
     const [ quizJoined, setQuizJoined ] = useState(false);
+
 
 
     useEffect( () => {
@@ -96,6 +99,12 @@ export default function Quiz() {
         socket.emit('attempted', quizID);
     }
 
+    if ( signal === undefined ) {
+        navigate('/');
+    };
+
+    if ( signal === -2 ) return <Quiz404 />;
+
     if ( !quizJoined ) return <div> Joining </div>;
 
     switch ( signal ) {
@@ -111,7 +120,5 @@ export default function Quiz() {
         case 2:
             return <QuizStart time = {time} leaderboard={leaderboard} questions={questions} addPoints={addPoints} nextQuestion={nextQuestion} questionIndex={questionIndex} setAttempted = {setAttempted} />;
         
-        default:
-            return <div> Invalid Signal </div>
     }
 }

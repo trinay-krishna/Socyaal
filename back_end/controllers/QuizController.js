@@ -1,12 +1,20 @@
 const Quiz = require('../models/Quiz');
 const { body, validationResult } = require('express-validator');
 const { addQuiz } = require('../socketConfig/setupSockets');
+const mongoose = require('mongoose');
 
 exports.getQuiz = async ( req, res, next ) => {
 
     try {
         const { quizID } = req.params;
 
+        if ( !mongoose.Types.ObjectId.isValid( quizID ) ) {
+            return res.status(400).json({
+                success: false,
+                signal: -2,
+                msg: 'Quiz does not exist',
+            });
+        }
         const quiz = await Quiz.findOne({
             _id: quizID,
         });
@@ -14,6 +22,7 @@ exports.getQuiz = async ( req, res, next ) => {
         if ( !quiz ) {
             return res.status(400).json({
                 success: false,
+                signal: -2,
                 msg: 'Quiz does not exist!',
             });
         }

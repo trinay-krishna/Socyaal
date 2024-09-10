@@ -34,6 +34,7 @@ function setupSocket( io ) {
     function getLeaderboard( quizID ) {
         const participants = Object.entries(leaderboard[quizID])
             .sort( ([, userA], [, userB]) => userB.points - userA.points || userA.endTime - userB.endTime )
+            .slice(0,10)
             .map( ( [, { userName ,points }] ) => ({ userName, points }) );
         console.log(participants);
         return participants;
@@ -55,16 +56,12 @@ function setupSocket( io ) {
             console.log('joining', quizID);
 
             const userID = getUserID(socket);
-            const user = await User.findOne({ _id: userID });
-            console.log('User is', user);
-            if ( !user )
-                    return;
-            
-            const userName = user.userName;
-            console.log('userName is', userName);
+
             if (  leaderboard[quizID] && !leaderboard[quizID][userID] ) {
-                console.log('Leaderboard is', leaderboard);
-                console.log('init leaderboard');
+                const user = await User.findOne({ _id: userID });
+                if ( !user )
+                        return;
+                const userName = user.userName;
                 leaderboard[quizID][userID] = { userName, points: 0, currQuestion: 0, attempted: false, endTime: Infinity };
             }
 

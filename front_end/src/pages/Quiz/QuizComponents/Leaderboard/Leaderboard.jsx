@@ -6,9 +6,7 @@ export default function Leaderboard( { leaderboard } ) {
             <p className={styles.leaderboardText}>Leaderboard</p>
             {
                 ( leaderboard.length != 0 ) ?
-                leaderboard.map(  (user, index) =>  {
-                    if ( index > 9 )
-                        return; 
+                leaderboard.map(  user =>  {
                     return (
                         <div
                             className={styles.leaderboardEntry}
