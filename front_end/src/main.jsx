@@ -7,6 +7,7 @@ import Signup from './pages/Signup/Signup';
 import EmailVerify from './pages/EmailVerify/EmailVerify';
 import Home from './pages/Home/Home';
 import Quiz from './pages/Quiz/Quiz';
+import QuizList from './pages/QuizList/QuizList';
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,11 @@ const router = createBrowserRouter([
   {
     path: '/quiz/:quizID',
     element: <Quiz />,
+  },
+
+  {
+    path: '/quiz/quizList',
+    element: <QuizList />,
   },
 
 ]);

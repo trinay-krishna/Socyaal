@@ -5,6 +5,7 @@ import Timer from "../../components/Timer/Timer";
 import QuizStart from "./QuizComponents/QuizStart/QuizStart";
 import QuizFinish from "./QuizComponents/QuizFinish/QuizFinish";
 import Quiz404 from "./QuizComponents/Quiz404/Quiz404";
+import Loading from "../Loading/Loading";
 
 let socket;
 
@@ -105,11 +106,11 @@ export default function Quiz() {
 
     if ( signal === -2 ) return <Quiz404 />;
 
-    if ( !quizJoined ) return <div> Joining </div>;
+    if ( !quizJoined ) return <Loading />;
 
     switch ( signal ) {
         case -1:
-            return <div>LOADING</div>;
+            return <Loading />;
         
         case 0: 
             return <div> Time Left is: {time} </div>

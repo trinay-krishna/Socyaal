@@ -4,7 +4,9 @@ const checkAuthenticated = require('../authentication/checkAuthentication');
 const quizController = require('../controllers/QuizController');
 
 
+router.get('/quizList', checkAuthenticated, quizController.getQuizList)
 router.get('/:quizID', checkAuthenticated, quizController.getQuiz);
+
 
 router.post('/createQuiz', checkAuthenticated, quizController.createQuiz);
 

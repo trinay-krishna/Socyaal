@@ -24,6 +24,7 @@ export default function Home() {
             <div className={styles.navigationContainer}>
                 <nav className={styles.navigation}>
                     <NavButton src={'/Profile.svg'} text={'Home'} />
+                    <NavButton src={'/quiz.svg'} text={'Trivia'} to={'/quiz/quizList'} />
                 </nav>
             </div>
             <div className={styles.posts}>

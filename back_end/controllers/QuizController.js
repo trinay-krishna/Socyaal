@@ -151,3 +151,50 @@ exports.createQuiz = [
         }
     }
 ]
+
+exports.getQuizList = async ( req, res, next ) => {
+    try {
+        const [ upcomingQuizList,
+                ongoingQuizList,
+                finishedQuizList ] = await Promise.all([
+                    Quiz.find( { startDate: { $gt: Date.now() } }, { questions: false, endDate: false,  } ),
+                    Quiz.find( { 
+                        $and: [
+                            {
+                                startDate : { $lt: Date.now() }
+                            },
+                            {
+                                endDate: { $gt: Date.now() },
+                            }
+                        ]
+                    }, { questions: false, endDate: false, startDate: false,  } ),
+                    Quiz.find( { endDate: { $lt: Date.now() } }, { questions: false, endDate: false, startDate: false, } ),
+                ]);
+
+        
+        res.status(200).json( {
+            success: true,
+    
+            quizList: [
+                {
+                    type: 'Upcoming',
+                    list: upcomingQuizList
+                },
+                {
+                    type: 'Ongoing',
+                    list: ongoingQuizList,
+                },
+                {
+                    type: 'Finished',
+                    list: finishedQuizList,
+                }
+            ]
+        });
+    } catch( err ) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            msg: err,
+        });
+    }
+}
