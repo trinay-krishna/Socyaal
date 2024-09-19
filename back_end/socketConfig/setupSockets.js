@@ -16,6 +16,7 @@ function addQuiz( quizID, endDate ) {
         await Promise.all( participantEntries.map( ( [ userID, { points, endTime } ] ) => {
             const participantInstance = new Participant({
                 userID,
+                userName,
                 quizID,
                 points,
                 endDate: endTime,

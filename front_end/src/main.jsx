@@ -8,6 +8,7 @@ import EmailVerify from './pages/EmailVerify/EmailVerify';
 import Home from './pages/Home/Home';
 import Quiz from './pages/Quiz/Quiz';
 import QuizList from './pages/QuizList/QuizList';
+import Leaderboard from './pages/Leaderboard/Leaderboard';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,12 @@ const router = createBrowserRouter([
   {
     path: '/quiz/quizList',
     element: <QuizList />,
+
+  },
+
+  {
+    path: '/quiz/leaderboard/:quizID/:page',
+    element: <Leaderboard />,
   },
 
 ]);

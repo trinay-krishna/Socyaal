@@ -8,6 +8,11 @@ const ParticipantSchema = new Schema({
         required: true,
     },
 
+    userName: {
+        type: String,
+        required: true,
+    },
+
     quizID: {
         type: Schema.Types.ObjectId,
         ref: 'Quiz',

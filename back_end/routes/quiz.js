@@ -4,7 +4,8 @@ const checkAuthenticated = require('../authentication/checkAuthentication');
 const quizController = require('../controllers/QuizController');
 
 
-router.get('/quizList', checkAuthenticated, quizController.getQuizList)
+router.get('/quizList', checkAuthenticated, quizController.getQuizList);
+router.get('/leaderboard/:quizID/:page', checkAuthenticated, quizController.getLeaderboard);
 router.get('/:quizID', checkAuthenticated, quizController.getQuiz);
 
 

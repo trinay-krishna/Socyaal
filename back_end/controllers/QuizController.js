@@ -1,4 +1,5 @@
 const Quiz = require('../models/Quiz');
+const Participant = require('../models/Participant');
 const { body, validationResult } = require('express-validator');
 const { addQuiz } = require('../socketConfig/setupSockets');
 const mongoose = require('mongoose');
@@ -191,6 +192,55 @@ exports.getQuizList = async ( req, res, next ) => {
             ]
         });
     } catch( err ) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            msg: err,
+        });
+    }
+}
+
+exports.getLeaderboard = async ( req, res, next ) => {
+    try {
+        const { quizID, page } = req.params;
+
+        const quiz = await Quiz.findOne( { _id: quizID } );
+
+        if ( !quiz ) {
+            return res.status(400).json({
+                success: false,
+                msg: 'Quiz not found!',
+            });
+        }
+        
+        const pageIndex = page - 1;
+        const MAX_ENTRIES = 10;
+        
+        const [ totalDocuments, leaderboard ] = await Promise.all([
+            Participant.countDocuments( { quizID } ),
+            Participant.find( { quizID }, { quizID: false,  } )
+                                    .sort( { points: -1, endDate: 1 } )
+                                    .skip( pageIndex * MAX_ENTRIES )
+                                    .limit( MAX_ENTRIES ),
+        ]);
+
+        if ( !leaderboard ) {
+            return res.status(400).json({
+                success: false,
+                msg: 'Leaderboard not available',
+            });
+        }
+
+
+        const totalPageCount = Math.ceil( totalDocuments / MAX_ENTRIES );
+
+        res.status(200).json({
+            success: true,
+            leaderboard,
+            totalPageCount,
+        });
+        
+    } catch(err) {
         console.error(err);
         res.status(500).json({
             success: false,

@@ -1,6 +1,14 @@
+import { useNavigate, useParams } from 'react-router-dom';
 import styles from './QuizFinish.module.css';
 
 export default function QuizFinish( { time } ) {
+
+    const { quizID } = useParams();
+    const navigate = useNavigate();
+
+    function handleLeaderboardClick() {
+        navigate(`/quiz/leaderboard/${quizID}/1`);
+    }
 
 return(
     <div className={styles.quizFinishContainer}>
@@ -14,7 +22,7 @@ return(
                 </div> :
                 <div className={styles.playDiv}>
                     <button>Play offline?</button>
-                    <button>Leaderboard</button>
+                    <button onClick={handleLeaderboardClick}>Leaderboard</button>
                 </div>
             }
         </div>
