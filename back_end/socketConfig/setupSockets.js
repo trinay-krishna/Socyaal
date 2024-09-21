@@ -7,13 +7,13 @@ let leaderboard = {};
 function addQuiz( quizID, endDate ) {
     leaderboard[quizID] = {};
 
-    const BUFFER = 30000;
+    const BUFFER = 5000;
     const timeRemaining = endDate - Date.now();
 
     setTimeout( async () => {
         const participantEntries = Object.entries(leaderboard[quizID]);
 
-        await Promise.all( participantEntries.map( ( [ userID, { points, endTime } ] ) => {
+        await Promise.all( participantEntries.map( ( [ userID, { userName, points, endTime } ] ) => {
             const participantInstance = new Participant({
                 userID,
                 userName,

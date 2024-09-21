@@ -18,14 +18,12 @@ export default function ListElement( { name, startDate, quizID } ) {
              {name} 
         </div>
         <button className={styles.listButton}>
-            {
-            ( !startDate ) ? 
+                {
+                    startDate  &&  <div className={styles.startDate}>
+                        Starts at: { formattedDate } { hours }:{minutes} 
+                    </div>
+                }
                 <Button text = "Play" onClick={ () => nagivateToQuiz( quizID ) }/>
-                :
-                <div className={styles.startDate}>
-                    Starts at: { formattedDate } { hours }:{minutes} 
-                </div>
-            }
         </button>
     </div>
     );

@@ -6,13 +6,15 @@ const NEXT_DIRECTION = 'next';
 
 const MAX_PAGE = 5;
 
-export default function PageNav( { currPage, url } ) {
+export default function PageNav( { totalPages, currPage, url } ) {
+
+    if ( totalPages === 1 )
+            return;
 
     const highlightStyle = {
         'backgroundColor': 'black',
     };
 
-    const totalPages = 8;
     if ( currPage > totalPages || currPage < 1 ) {
         return <div>Invalid Page</div>;
     }
