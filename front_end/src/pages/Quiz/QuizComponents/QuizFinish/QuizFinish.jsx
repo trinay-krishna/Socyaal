@@ -1,13 +1,21 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from './QuizFinish.module.css';
 
-export default function QuizFinish( { time } ) {
+export default function QuizFinish( { time, offlinePoints } ) {
 
     const { quizID } = useParams();
     const navigate = useNavigate();
 
     function handleLeaderboardClick() {
         navigate(`/quiz/leaderboard/${quizID}/1`);
+    }
+
+    function handlePlayOfflineClick() {
+        if ( offlinePoints ) {
+            return window.location.reload();
+        }
+
+        navigate(`/quiz/offline/${quizID}`)
     }
 
 return(
@@ -21,8 +29,10 @@ return(
                     <div> Time Left: {time} </div>
                 </div> :
                 <div className={styles.playDiv}>
-                    <button>Play offline?</button>
+                    <button onClick={handlePlayOfflineClick}>Play offline?</button>
                     <button onClick={handleLeaderboardClick}>Leaderboard</button>
+
+                    { ( offlinePoints ) && <div> Your points are: {offlinePoints} </div> }
                 </div>
             }
         </div>

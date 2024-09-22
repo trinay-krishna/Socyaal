@@ -6,6 +6,7 @@ import QuizStart from "./QuizComponents/QuizStart/QuizStart";
 import QuizFinish from "./QuizComponents/QuizFinish/QuizFinish";
 import Quiz404 from "./QuizComponents/Quiz404/Quiz404";
 import Loading from "../Loading/Loading";
+import QuizCountdown from "./QuizComponents/QuizCountdown/QuizCountdown";
 
 let socket;
 
@@ -113,7 +114,7 @@ export default function Quiz() {
             return <Loading />;
         
         case 0: 
-            return <div> Time Left is: {time} </div>
+            return <QuizCountdown time={time}/>
         
         case 1:
             return <QuizFinish time={time} />;
