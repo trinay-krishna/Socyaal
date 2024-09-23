@@ -8,6 +8,8 @@ import Leaderboard from "../Leaderboard/Leaderboard";
 const CORRECT_ANSWER_COLOR = 'green';
 const WRONG_ANSWER_COLOR = 'red';
 
+const CORRECT_ANSWER_BORDER = '2px solid green';
+
 export default function QuizStart( { time, leaderboard, questions, addPoints, nextQuestion, questionIndex, setAttempted } ) {
 
     const [ selectedOption, setSelectedOption ] = useState(-1);
@@ -23,6 +25,10 @@ export default function QuizStart( { time, leaderboard, questions, addPoints, ne
                 return { 'backgroundColor' : CORRECT_ANSWER_COLOR };
 
             return { 'backgroundColor' : WRONG_ANSWER_COLOR };
+        }
+
+        if ( selectedOption != -1 && optionIndex === correctAnswerIndex ) {
+            return { 'border' : CORRECT_ANSWER_BORDER };
         }
 
         return {};
@@ -54,7 +60,7 @@ export default function QuizStart( { time, leaderboard, questions, addPoints, ne
                 <Leaderboard leaderboard={leaderboard}/>
                 <div className={styles.questionWrapper}>
                     <div className={styles.timer}> Time Left: {time} </div>
-                    <div className={styles.questionDiv}> Question: {questions[questionIndex].questionText} </div>
+                    <div className={styles.questionDiv}>{questionIndex + 1}/{questions.length} Question: {questions[questionIndex].questionText} </div>
                     <div className={styles.optionContainer}>
                         {
                             questions[questionIndex].options.map( ( option, optionIndex ) => (
