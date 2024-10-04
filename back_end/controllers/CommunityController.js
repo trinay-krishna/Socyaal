@@ -24,13 +24,14 @@ exports.create_community = [
                 });
             }
 
-            const { communityName, communityDescription } = req.body;
+            const { communityName, communityDescription, imgURL } = req.body;
 
             const userID = req.session.passport.user;
 
             const community = new Community({
                 name: communityName,
                 description: communityDescription,
+                imgURL,
                 createdBy: userID,
             });
 

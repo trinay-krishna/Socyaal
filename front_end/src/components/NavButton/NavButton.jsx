@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import styles from './NavButton.module.css';
 
-export default function NavButton({ src, text, to }) {
+export default function NavButton({ src, text, to, onClick }) {
     const navigate = useNavigate();
 
     function handleClick() {
@@ -13,7 +13,7 @@ export default function NavButton({ src, text, to }) {
     return(
         <button 
         className={styles.navButton}
-        onClick={handleClick}
+        onClick={ onClick || handleClick }
         >
             <img src={src} />
             <p>{text}</p>
