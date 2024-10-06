@@ -67,6 +67,7 @@ export default function QuizCreate() {
             setError('');
         } else {
             setError(isValid);
+            return;
         }
 
         const startDateObj = new Date(startDate).getTime();
