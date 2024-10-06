@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styles from './QuizList.module.css';
 import ListElement from "./ListElement/ListElement";
 import Loading from "../Loading/Loading";
+import Button from "../../components/Button/Button";
 
 export default function QuizList() {
     const API_URL = import.meta.env.VITE_API_URL;
@@ -34,10 +35,17 @@ export default function QuizList() {
         } )
     }, [] );
 
+    function handleCreateQuiz() {
+        navigate('/quiz/createQuiz');
+    }
+
     if ( isLoading ) return <Loading />;
 
     return (
         <div className={styles.container}>
+                <div className={styles.buttonContainer}>
+                    <Button text={'Create AI Quiz'} onClick={handleCreateQuiz}/>
+                </div>
             <div className={styles.listContainer} >
                 <div className={styles.listTabs}>
                     {

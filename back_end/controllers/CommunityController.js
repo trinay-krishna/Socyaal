@@ -77,6 +77,24 @@ exports.get_popular_communities = async ( req, res, next ) => {
     }
 }
 
+exports.get_user_communities = async ( req, res, next ) => {
+    try {
+        const userID = req.session.passport.user;
+
+        const communities = await CommunityMembers.find( { userID }, { _id: false, userID: false } );
+
+        res.status(200).json({
+            success: true,
+            communities,
+        });
+    } catch(err) {
+        res.status(500).json({
+            success: false,
+            msg: 'Error',
+        });
+    }
+}
+
 exports.search_community = async ( req, res, next ) => {
     try {
 
@@ -121,6 +139,7 @@ exports.join_community = async ( req, res, next ) => {
         if ( isPresent ) {
             return res.status(200).json({
                 success: false,
+                signal: 0,
                 msg: 'User already in community!',
             });
         }
@@ -143,6 +162,27 @@ exports.join_community = async ( req, res, next ) => {
             success: false,
             msg: 'Error',
             error: err,
+        });
+    }
+}
+
+exports.leave_community = async ( req, res, next ) => {
+    try {
+        const communityID = req.params.communityID;
+        const userID = req.session.passport.user;
+
+        await CommunityMembers.deleteOne( { userID, communityID } );
+
+        res.status(200).json({
+            success: true,
+            msg: 'User left community',
+        });
+    } catch(err) {
+        console.error(err);
+
+        res.status(500).json({
+            success: false,
+            msg: 'Error',
         });
     }
 }

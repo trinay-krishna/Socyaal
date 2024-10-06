@@ -10,6 +10,7 @@ import Quiz from './pages/Quiz/Quiz';
 import QuizList from './pages/QuizList/QuizList';
 import Leaderboard from './pages/Leaderboard/Leaderboard';
 import OfflineQuiz from './pages/OfflineQuiz/OfflineQuiz';
+import QuizCreate from './pages/QuizCreate/QuizCreate';
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,12 @@ const router = createBrowserRouter([
   {
     path: '/quiz/quizList',
     element: <QuizList />,
+
+  },
+
+  {
+    path: '/quiz/createQuiz',
+    element: <QuizCreate />,
 
   },
 

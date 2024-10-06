@@ -17,6 +17,7 @@
 }
 
 .mainContainer {
+    position: relative;
     display: flex;
 }
 

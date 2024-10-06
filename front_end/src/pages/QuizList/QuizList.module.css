@@ -15,6 +15,8 @@
     border: 2px solid magenta;
     border-radius: 1.5em;
     box-shadow: 0 0 1.4em magenta;
+
+    margin-top: 1em;
 }
 
 .listTabs {
@@ -29,8 +31,14 @@
 
 .tab:first-of-type{
     border-top-left-radius: 1.5em;
+    border-bottom-left-radius: 1.5rem;
 }
 
 .tab:last-of-type{
     border-top-right-radius: 1.5em;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: center;
 }

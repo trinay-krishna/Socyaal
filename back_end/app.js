@@ -10,6 +10,7 @@ const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
 const { setupSocket } = require('./socketConfig/setupSockets');
+const OpenAI = require('openai');
 
 const MongoStore = require('connect-mongo');
 
@@ -114,6 +115,10 @@ io.use( (socket, next) => {
 
 setupSocket(io);
 
+const openai = new OpenAI();
+
+
+app.set('openai', openai);
 app.set('io', io);
 
 httpServer.listen( process.env.PORT || 3000, () => {

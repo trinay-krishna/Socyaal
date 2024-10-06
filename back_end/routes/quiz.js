@@ -8,7 +8,6 @@ router.get('/quizList', checkAuthenticated, quizController.getQuizList);
 router.get('/leaderboard/:quizID/:page', checkAuthenticated, quizController.getLeaderboard);
 router.get('/:quizID', checkAuthenticated, quizController.getQuiz);
 
-
 router.post('/createQuiz', checkAuthenticated, quizController.createQuiz);
 
 module.exports = router;

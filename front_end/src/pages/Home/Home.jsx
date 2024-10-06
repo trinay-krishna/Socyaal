@@ -1,14 +1,37 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CommunityJoinDialog from '../../components/CommunityJoinDialog/CommunityJoin';
 import CommunityList from '../../components/CommunityList/CommunityList';
 import NavButton from '../../components/NavButton/NavButton';
 import Post from '../../components/Post/Post';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import styles from './Home.module.css';
+import Loading from '../Loading/Loading';
+import { checkAuth, getAPIURL } from '../../utils.js';
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
-    const [ showDialog, setShowDialog ] = useState({});
+    const API_URL = getAPIURL();
 
+    const [ showDialog, setShowDialog ] = useState({});
+    const [ isLoading, setIsLoading ] = useState(false);
+    const [ communities, setCommunities ] = useState([]);
+
+    useEffect ( ( ) => {
+        setIsLoading(true);
+        fetch(`${API_URL}/community/get-user-communities`, {
+            method: 'GET',
+            credentials: 'include',
+        })
+        .then( res => res.json() )
+        .then( res => {
+            if ( !checkAuth( res ) || !res.success )
+                return;
+            console.log(res.communities);
+            setCommunities(res.communities);
+            
+        } )
+        .finally( () => setIsLoading(false) );
+    }, [] );
 
     function openDialog( community ) {
         setShowDialog({
@@ -20,6 +43,7 @@ export default function Home() {
     function closeDialog() {
         setShowDialog({});
     }
+
 
     return(
         <div className={styles.homeWrapper}>
@@ -49,7 +73,8 @@ export default function Home() {
             <div className={styles.friends}>
                 FRIENDS
             </div>
-            { showDialog.community && <CommunityJoinDialog community={showDialog.community} isOpen={showDialog.show} closeDialog={closeDialog}/> }
+            { isLoading && <Loading backdrop={true}/>}
+            { showDialog.community && <CommunityJoinDialog userCommunities = {communities} setUserCommunities={setCommunities} community={showDialog.community} isOpen={showDialog.show} closeDialog={closeDialog}/> }
         </div>
     );
 }
