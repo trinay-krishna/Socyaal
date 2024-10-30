@@ -11,7 +11,7 @@
     padding: 1rem;
     padding-bottom: 0;
     grid-template-columns: 1fr 3fr 1fr;
-    grid-template-rows: 10% 1fr;
+    grid-template-rows: 10vh 1fr;
 
     position: relative;
 
@@ -79,7 +79,16 @@
     flex-direction: column;
     align-items: center;
 
+    gap: 1.2em;
+}
 
+.createPostContainer {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+
+    margin: 10px;
 }
 
 

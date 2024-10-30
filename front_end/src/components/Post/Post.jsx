@@ -8,14 +8,20 @@ import Dislike from '../../assets/dislike.svg';
 
 const MAX_LENGTH = 4;
 
-export default function Post() {
+export default function Post( { postIntance } ) {
 
     const [ readMore, setReadMore ] = useState(false);
     const [ like, setLike ] = useState(false);
     const [ dislike, setDislike ] = useState(false);
 
-    const arr = ['/bg.gif', '/invalid.gif','/bg.gif', '/invalid.gif'];
-    const content = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione repellendus dolore, voluptas neque velit odio omnis, odit doloribus incidunt itaque cum tenetur ducimus vero quis error adipisci minus, facilis aspernatur?\nsit amet consectetur\nsit amet consectetur\nsit amet consectetur\n";
+    const postImages = postIntance.media.map( mediaItem => mediaItem.mediaUrl );
+    const postDate = new Date(postIntance.createdAt)
+                    .toISOString()
+                    .replace(/T/, ' ')
+                    .replace(/\..+/, '');
+
+
+    const content = postIntance.content;
     const contentParas = content.split('\n');
 
 
@@ -44,15 +50,15 @@ export default function Post() {
             <div className={styles.profileHeader}>
                 <img src="/tempProfile.jpg" alt="" className={styles.profileImage}/>
                 <div className={styles.userInfo}>
-                    <p>Profile Name</p>
-                    <p>Date</p>
+                    <p> { postIntance.userName[0].userName } </p>
+                    <p> { postDate } </p>
                 </div>
             </div>
             <div className={styles.carousel}>
-                <ImageCarousel src={arr}/>
+                <ImageCarousel src={postImages}/>
             </div>
             <div className={styles.content}>
-                <p>Heading</p>
+                <p> { postIntance.title } </p>
                 <ul style={ !readMore ? paragraphStyle : undefined }>
                     {
                         contentParas.map( (line, index )=> <li key={index} >{line}</li> )

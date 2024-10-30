@@ -1,6 +1,7 @@
 const Community = require('../models/CommunityModel');
 const CommunityMembers = require('../models/CommunityMembers');
 const { body, validationResult } = require('express-validator');
+const { default: mongoose } = require('mongoose');
 
 exports.create_community = [
     body('communityName')
@@ -81,13 +82,32 @@ exports.get_user_communities = async ( req, res, next ) => {
     try {
         const userID = req.session.passport.user;
 
-        const communities = await CommunityMembers.find( { userID }, { _id: false, userID: false } );
+        const communities = await CommunityMembers.aggregate()
+        .match( { userID: mongoose.Types.ObjectId.createFromHexString(userID) } )
+        .project( { _id: false, userID: false, } )
+        .lookup({
+            from: 'communities',
+            localField: 'communityID',
+            foreignField: '_id',
+            as: 'communityName',
+            pipeline: [
+                {
+                    $project: {
+                        'name': true,
+                        '_id': false,
+                    }
+                }
+            ]
+        })
+
+
 
         res.status(200).json({
             success: true,
             communities,
         });
     } catch(err) {
+        console.error(err);
         res.status(500).json({
             success: false,
             msg: 'Error',

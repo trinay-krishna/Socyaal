@@ -11,12 +11,19 @@ import QuizList from './pages/QuizList/QuizList';
 import Leaderboard from './pages/Leaderboard/Leaderboard';
 import OfflineQuiz from './pages/OfflineQuiz/OfflineQuiz';
 import QuizCreate from './pages/QuizCreate/QuizCreate';
+import PostCreate from './pages/PostCreate/PostCreate';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Login />,
   },
+
+  {
+    path: '/post/create_post',
+    element: <PostCreate />,
+  },
+
   {
     path: '/signup',
     element: <Signup />,

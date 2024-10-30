@@ -8,13 +8,17 @@ import styles from './Home.module.css';
 import Loading from '../Loading/Loading';
 import { checkAuth, getAPIURL } from '../../utils.js';
 import { useNavigate } from 'react-router-dom';
+import Button from '../../components/Button/Button.jsx';
 
 export default function Home() {
     const API_URL = getAPIURL();
+    const navigate = useNavigate();
 
     const [ showDialog, setShowDialog ] = useState({});
     const [ isLoading, setIsLoading ] = useState(false);
     const [ communities, setCommunities ] = useState([]);
+
+    const [ posts, setPosts ] = useState([]);
 
     useEffect ( ( ) => {
         setIsLoading(true);
@@ -32,6 +36,20 @@ export default function Home() {
         } )
         .finally( () => setIsLoading(false) );
     }, [] );
+
+    useEffect( ( ) => {
+        fetch(`${API_URL}/post/get-posts/0`, {
+            method: 'GET',
+            credentials: 'include',
+        })
+        .then( res => res.json() )
+        .then( res => {
+            if ( !checkAuth( res ) || !res.success )
+                return;
+            console.log(res.posts);
+            setPosts(res.posts);
+        } )
+    }, [] )
 
     function openDialog( community ) {
         setShowDialog({
@@ -68,7 +86,12 @@ export default function Home() {
                 <CommunityList setDialog={openDialog}/>
             </div>
             <div className={styles.posts}>
-                <Post />
+                <div className={styles.createPostContainer}>
+                    <Button text={'Create Post'} onClick={ () => navigate( '/post/create_post' ) }/>
+                </div>
+                {
+                    posts.map( post => <Post postIntance={post} key={post._id}/> )
+                }
             </div>
             <div className={styles.friends}>
                 FRIENDS

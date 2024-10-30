@@ -63,10 +63,27 @@ exports.create_post = [
 exports.get_posts = async (req, res, next ) => {
     try {
         const page = req.params.page;
-        const posts = await Post.find({})
-                            .sort( { createdAt : -1 } )
-                            .skip( 25 * page )
-                            .limit(25);
+
+        const posts = await Post.aggregate()
+                    .match( { } )
+                    .lookup({
+                        from: 'users',
+                        localField: 'userID',
+                        foreignField: '_id',
+                        as: 'userName',
+                        pipeline: [
+                            {
+                                $project: {
+                                    'userName': true,
+                                    '_id': false,
+                                }
+                            }
+                        ]
+                    })
+                    .sort( { createdAt : -1 } )
+                    .skip( 25 * page )
+                    .limit(25);
+        
         
         console.log(posts);
         res.status(200).json({
