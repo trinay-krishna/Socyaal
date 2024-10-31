@@ -14,7 +14,7 @@ export default function Post( { postIntance } ) {
     const [ like, setLike ] = useState(false);
     const [ dislike, setDislike ] = useState(false);
 
-    const postImages = postIntance.media.map( mediaItem => mediaItem.mediaUrl );
+    const postImages = postIntance.media;
     const postDate = new Date(postIntance.createdAt)
                     .toISOString()
                     .replace(/T/, ' ')
@@ -23,6 +23,8 @@ export default function Post( { postIntance } ) {
 
     const content = postIntance.content;
     const contentParas = content.split('\n');
+
+    console.log(JSON.stringify(postImages), ';e;');
 
 
     const paragraphStyle = {

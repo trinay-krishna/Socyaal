@@ -12,6 +12,7 @@ import Leaderboard from './pages/Leaderboard/Leaderboard';
 import OfflineQuiz from './pages/OfflineQuiz/OfflineQuiz';
 import QuizCreate from './pages/QuizCreate/QuizCreate';
 import PostCreate from './pages/PostCreate/PostCreate';
+import CommunityCreate from './pages/CommunityCreate/CommunityCreate';
 
 const router = createBrowserRouter([
   {
@@ -63,6 +64,11 @@ const router = createBrowserRouter([
   {
     path: '/quiz/leaderboard/:quizID/:page',
     element: <Leaderboard />,
+  },
+  
+  {
+    path: '/community/create_community',
+    element: <CommunityCreate />,
   },
 
 ]);

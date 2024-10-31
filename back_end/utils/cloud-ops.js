@@ -2,14 +2,14 @@ const cloudinary = require('./cloudinary-config');
 const classifyMediaType = require('./classifyMediaType');
 const path = require('path');
 
-async function uploadToCloud(userID, filePaths) {   
+async function uploadToCloud(folderName, filePaths) {   
     try {
         const uploads = filePaths.map(filePath => {
             const extension = (path.extname(filePath).slice(1));
             const mediaType = classifyMediaType(extension);
             return (cloudinary.uploader.upload(filePath, {
                     resource_type: mediaType,
-                    folder: `${userID}`,
+                    folder: `${folderName}`,
                 }));
         });
         const links = await Promise.all(uploads);

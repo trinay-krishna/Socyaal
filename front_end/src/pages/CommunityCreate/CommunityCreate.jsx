@@ -1,42 +1,21 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { checkAuth, getAPIURL } from "../../utils";
 import Button from '../../components/Button/Button';
 import Loading from "../Loading/Loading";
-import styles from './PostCreate.module.css';
+import styles from './CommunityCreate.module.css';
 import ImageCarousel from "../../components/ImageCarousel/ImageCarousel";
 import { useNavigate } from "react-router-dom";
 
-export default function PostCreate() {
+export default function CommunityCreate() {
     const API_URL = getAPIURL();
     const navigate = useNavigate();
 
-    const [ communities, setCommunities ] = useState([]);
-    const [ isLoading, setIsLoading ] = useState(true);
+    const [ isLoading, setIsLoading ] = useState(false);
 
     const [ media, setMedia ] = useState([]);
 
     const mediaUploadRef = useRef(null);
 
-
-    useEffect ( ( ) => {
-        setIsLoading(true);
-        fetch(`${API_URL}/community/get-user-communities`, {
-            method: 'GET',
-            credentials: 'include',
-        })
-        .then( res => res.json() )
-        .then( res => {
-            if ( !checkAuth( res ) || !res.success )
-                return;
-            
-            if ( res.communities.length == 0 )
-                navigate('/home');
-
-            setCommunities(res.communities);
-            
-        } )
-        .finally( () => setIsLoading(false) );
-    }, [] );
 
     function onMediaUpload( event ) {
         const target = event.target;
@@ -73,17 +52,18 @@ export default function PostCreate() {
         const formData = new FormData(form);
 
         setIsLoading(true);
-        fetch(`${API_URL}/post/create-post`, {
+        fetch(`${API_URL}/community/createCommunity`, {
             method: 'POST',
             credentials: 'include',
             body: formData,
         })
         .then( res => res.json() )
         .then( res => {
+            if ( !checkAuth( res ) || !res.success ) {
+                return;
+            }
             if ( res.success ) {
                 navigate('/home');
-            } else {
-                setIsLoading(false);
             }
         } );
     }
@@ -93,7 +73,7 @@ export default function PostCreate() {
     return (
         <div className={styles.container}>
             <div className={ styles.mainContainer }>
-                <form onSubmit={ onFormSubmit } className={styles.postForm}>
+                <form onSubmit={ onFormSubmit } className={styles.communityForm}>
                     <div className={styles.mediaUploadContainer}>
                         {
                             ( media.length > 0 ) &&
@@ -104,33 +84,25 @@ export default function PostCreate() {
                         }
                         <div className={styles.mediaUploadSubContainer}>
                             <label htmlFor="file-upload" className={styles.fileUpload} ref={mediaUploadRef} style={ ( media.length > 0 ? { 'display': 'none' } : {} ) }> + </label>
-                            <input type="file" accept="image/*" id="file-upload" name="postImages" multiple onChange={ onMediaUpload } required/>
+                            <input type="file" accept="image/*" id="file-upload" name="communityImg" multiple onChange={ onMediaUpload } required/>
                         </div>
                     </div>
                     <div className={styles.postDetails}>
-                        <h1 className={styles.postHeading}>Create Post</h1>
+                        <h1 className={styles.postHeading}>Create Community</h1>
 
                         <div>
                             <div className={styles.inputContainer}>
-                                <label htmlFor="postTitle">Title</label>
-                                <input type="text" id="postTitle" placeholder="Enter Post title" name="title" className={styles.input} required/>
+                                <label htmlFor="communityName">Community Name</label>
+                                <input type="text" id="communityName" placeholder="Enter Community title" name="communityName" className={styles.input} required/>
                             </div>
                             <div className={styles.inputContainer}>
-                                <label htmlFor="postDesc">Desciption</label>
-                                <textarea id="postDesc" name="content" rows="4" cols="50" className={styles.input} placeholder="Enter Desciption" required/>
+                                <label htmlFor="communityDescription">Desciption</label>
+                                <textarea id="communityDescription" name="communityDescription" rows="4" cols="50" className={styles.input} placeholder="Enter Desciption" required/>
                             </div>
-                            <div className={styles.inputContainer}>
-                                <label htmlFor="communityDropDown">Select Community</label>
-                                <select name="community" id="communityDropDown" className={styles.input} required>
-                                    {
-                                        communities.map(community => <option className={styles.option} key={community.communityID} value={community.communityID}>{community.communityName[0].name}</option>)
-                                    }
-                            
-                                </select>
-                            </div>
+
                         </div>
                         <div className={styles.submitContainer}>
-                            <Button text={'Create Post'} type={'submit'}/>
+                            <Button text={'Create Community'} type={'submit'}/>
                         </div>
                     </div>
                 </form>

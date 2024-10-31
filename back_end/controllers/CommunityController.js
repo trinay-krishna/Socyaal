@@ -1,17 +1,21 @@
 const Community = require('../models/CommunityModel');
 const CommunityMembers = require('../models/CommunityMembers');
 const { body, validationResult } = require('express-validator');
+const upload = require('../utils/multer-config');
+const { uploadToCloud } = require('../utils/cloud-ops');
+const clearLocalUploads = require('../utils/file-ops');
 const { default: mongoose } = require('mongoose');
 
 exports.create_community = [
-    body('communityName')
-    .trim()
-    .isLength( { min: 5 } )
-    .withMessage('Community name must atleast be 5 chararcters long'),
-    body('communityDescription')
-    .trim()
-    .isLength( { min: 5 } )
-    .withMessage('Community description must atleast be 5 chararcters long'),
+    // body('communityName')
+    // .trim()
+    // .isLength( { min: 5 } )
+    // .withMessage('Community name must atleast be 5 chararcters long'),
+    // body('communityDescription')
+    // .trim()
+    // .isLength( { min: 5 } )
+    // .withMessage('Community description must atleast be 5 chararcters long'),
+    upload.single('communityImg'),
     async ( req, res, next ) => {
 
         try {
@@ -25,7 +29,24 @@ exports.create_community = [
                 });
             }
 
-            const { communityName, communityDescription, imgURL } = req.body;
+
+            const { communityName, communityDescription } = req.body;
+
+            if ( await Community.findOne({ name: communityName }) ) {
+                return res.status(400).json({
+                    success: false,
+                    msg: 'Community already exists',
+                });
+            }
+
+            const fileName = req.file.path.replace(/^.*[\\/]/, '');
+            const filePath = req.file.path;
+
+            const link = await uploadToCloud(communityName, [ filePath ]);
+            await clearLocalUploads([ fileName ]);
+
+            const imgURL = link[0].secure_url;
+
 
             const userID = req.session.passport.user;
 
@@ -35,6 +56,8 @@ exports.create_community = [
                 imgURL,
                 createdBy: userID,
             });
+
+            console.log(community);
 
             await community.save();
 

@@ -2,7 +2,7 @@
 
 function classifyMediaType(extname) {
 
-    const imageExtensions = ['jpeg', 'jpg', 'png', 'bmp', 'heic', 'gif'];
+    const imageExtensions = ['jpeg', 'jpg', 'png', 'bmp', 'heic', 'gif', 'webp'];
     const videoExtensions = ['mp4', 'mov', 'avi'];
 
     if(imageExtensions.includes(extname)) {
