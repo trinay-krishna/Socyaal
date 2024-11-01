@@ -11,6 +11,7 @@ export default function CommunityJoinDialog( { community, isOpen, closeDialog, u
     const dialogRef = useRef(null);
 
     const isMember = ( userCommunities.find( ele => ele.communityID === community._id ) );
+    console.log(isMember);
 
     useEffect( ( ) => {
         if ( isOpen ) {
@@ -74,7 +75,10 @@ export default function CommunityJoinDialog( { community, isOpen, closeDialog, u
                     </p>
 
                     <div className={styles.buttonContainer}>
-                        <Button text={ ( isMember ) ? 'Leave' : 'Join' } onClick={ ( !isMember ) ? handleJoin : handleLeave } disabled={isLoading}/>
+                        {
+                            ( isMember && isMember.role === 'Admin' ) ? <Button text={'Edit'}/> :
+                            <Button text={ ( isMember ) ? 'Leave' : 'Join' } onClick={ ( !isMember ) ? handleJoin : handleLeave } disabled={isLoading}/>
+                        }
                         <Button text={'Close'} onClick={closeDialog} disabled={isLoading}/>
                     </div>
                 </div>

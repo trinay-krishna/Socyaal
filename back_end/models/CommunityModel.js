@@ -13,18 +13,6 @@ const CommunitySchema = new Schema({
         required: true,
     },
 
-    members: {
-        type: [ Schema.Types.ObjectId ],
-        ref: 'User',
-        default: [],
-    },
-
-    moderators: {
-        type: [ Schema.Types.ObjectId ],
-        ref: 'User',
-        default: [],
-    },
-
     imgURL: {
         type: String,
         required: true,

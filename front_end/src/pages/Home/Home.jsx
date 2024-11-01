@@ -84,6 +84,9 @@ export default function Home() {
                     <NavButton src={'/quiz.svg'} text={'Trivia'} to={'/quiz/quizList'} />
                 </nav>
                 <CommunityList setDialog={openDialog}/>
+                <div className={styles.communityCreate}>
+                    <Button text={'Create Community'} onClick={ () => navigate('/community/create_community') }/>
+                </div>
             </div>
             <div className={styles.posts}>
                 <div className={styles.createPostContainer}>

@@ -61,6 +61,9 @@ exports.create_community = [
 
             await community.save();
 
+            const communityMember = new CommunityMembers({ communityID: community._id, userID, role: 'Admin' });
+            await communityMember.save();
+
             res.status(201).json({
                 success: true,
                 msg: 'Community created!',
