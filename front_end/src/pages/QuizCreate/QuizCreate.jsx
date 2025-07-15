@@ -16,7 +16,7 @@ const convertToDateTimeLocalString = (date) => {
     return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
-const MINIMUM_QUIZ_DURATION = 3;
+const MINIMUM_QUIZ_DURATION = 1;
 
 function checkDates(startDateString, endDateString) {
     const startDate = new Date(startDateString);
